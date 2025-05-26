@@ -6,16 +6,20 @@ import torchvision.transforms as transforms
 from torchvision.models import resnet18
 from ndlinear import NdLinear
 from tqdm import tqdm
-from utils import plot_accuracy_comparison
+from utils import plot_both_accuracy, plot_both_loss, plot_both_timing
+import time
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+if torch.cuda.is_available():
+    print("Using Cuda")
+else:
+    print("Not Using Cuda")
 
 # Hyperparameters
-num_epochs = 10
-batch_size = 128
+num_epochs = 5
+batch_size = 256
 learning_rate = 0.001
-use_ndlinear = True  # Set to False for baseline
 
 # CIFAR-10 dataset
 transform = transforms.Compose([
@@ -31,7 +35,7 @@ test_dataset = torchvision.datasets.CIFAR10(root='./data', train=False,
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
                                            shuffle=True, num_workers=2)
 test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size,
-                                           shuffle=False, num_workers=2)
+                                          shuffle=False, num_workers=2)
 
 # Model definition
 def get_model(nd=False):
@@ -82,16 +86,33 @@ def evaluate(model, loader, criterion):
     acc = 100. * correct / total
     return loss / len(loader), acc
 
-# Main
-model = get_model(use_ndlinear)
+# Run both models and compare
+results = {
+    'Baseline': {'acc': [], 'loss': [], 'time': []},
+    'NdLinear': {'acc': [], 'loss': [], 'time': []}
+}
+
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-for epoch in range(num_epochs):
-    train_loss, train_acc = train(model, train_loader, criterion, optimizer)
-    test_loss, test_acc = evaluate(model, test_loader, criterion)
-    print(f"Epoch [{epoch+1}/{num_epochs}] "
-          f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.2f}% "
-          f"Test Loss: {test_loss:.4f}, Test Acc: {test_acc:.2f}%")
+for label, use_nd in [('Baseline', False), ('NdLinear', True)]:
+    print(f"\nTraining {label} Model")
+    model = get_model(nd=use_nd)
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
-plot_accuracy_comparison(epochs, baseline_acc, ndlinear_acc)
+    for epoch in range(num_epochs):
+        start_time = time.time()
+        train_loss, train_acc = train(model, train_loader, criterion, optimizer)
+        val_loss, val_acc = evaluate(model, test_loader, criterion)
+        end_time = time.time()
+
+        results[label]['acc'].append(val_acc)
+        results[label]['loss'].append(val_loss)
+        results[label]['time'].append(end_time - start_time)
+
+        print(f"Epoch {epoch+1}: Val Acc = {val_acc:.2f}%, Loss = {val_loss:.4f}, Time = {end_time - start_time:.2f}s")
+
+# Plot results using utils
+epochs = list(range(1, num_epochs + 1))
+plot_both_accuracy(epochs, results['Baseline']['acc'], results['NdLinear']['acc'])
+plot_both_loss(epochs, results['Baseline']['loss'], results['NdLinear']['loss'])
+plot_both_timing(epochs, results['Baseline']['time'], results['NdLinear']['time'])
