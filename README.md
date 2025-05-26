@@ -1,35 +1,56 @@
-# CIFAR-10 Classification with NdLinear-Enhanced ResNet
+# CIFAR-10 Classification with NdLinear
 
-This project benchmarks the performance of a ResNet-18 model using `NdLinear` in place of the standard linear classification layer on the CIFAR-10 dataset.
+This project benchmarks the performance of a ResNet-18 model using [`NdLinear`](https://github.com/ensemble-core/NdLinear) in place of the standard linear classification layer on the CIFAR-10 dataset.
 
-## 🔍 Goal
+## 🔍 Objective
 
-Evaluate whether NdLinear improves generalization or representation when used in the final classification layer of a CNN.
-
-## 🧠 Architecture
-
-- Base model: `torchvision.models.resnet18(pretrained=False)`
-- Modified: Final `nn.Linear` layer replaced with `NdLinear`
-- Dataset: CIFAR-10 (10 classes of 32x32 color images)
-
-## ⚙️ How to Run
-
-```bash
-pip install -r requirements.txt
-python train.py
-```
-
-## 📊 Results (To Be Filled In)
-
-| Model             | Accuracy (%) | Loss |
-| ----------------- | ------------ | ---- |
-| Baseline ResNet18 | XX.X         | X.XX |
-| NdLinear ResNet18 | XX.X         | X.XX |
+Evaluate how NdLinear compares to a standard `nn.Linear` layer in:
+- Accuracy
+- Validation loss
+- Training time per epoch
 
 ## 📦 Requirements
 
-- torch
-- torchvision
-- ndlinear (via pip install git+https://github.com/ensemble-core/NdLinear)
-- matplotlib
-- tqdm
+You can install the required libraries with:
+
+```bash
+pip install torch torchvision tqdm matplotlib plotext
+pip install git+https://github.com/ensemble-core/NdLinear.git
+```
+
+## 🚀 How to Run
+
+```bash
+cd src
+python train.py
+```
+
+This will:
+- Train both a baseline ResNet18 and a NdLinear-augmented version
+- Log performance metrics
+- Save PNG plots to disk
+- Display terminal plots inline using `plotext`
+
+## 📊 Results
+
+Three visual comparisons are generated:
+- `accuracy_comparison.png`
+- `loss_comparison.png`
+- `timing_comparison.png`
+
+Each plot shows a comparison between the baseline and NdLinear-enhanced ResNet-18 models across all epochs.
+
+## 📁 Project Structure
+
+```
+ndlinear-cifar10-resnet/
+├── README.md
+├── requirements.txt (optional)
+└── src/
+    ├── train.py
+    └── utils.py
+```
+
+## ✍️ Notes
+
+NdLinear maintains the multidimensional structure of input tensors better than standard flattening operations. This project evaluates whether that translates to better learning performance or efficiency on a moderately sized benchmark like CIFAR-10.
