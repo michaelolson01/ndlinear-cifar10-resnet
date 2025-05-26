@@ -189,3 +189,5 @@ cython_debug/
 
 # Ignore dataset
 src/data
+src/output
+
