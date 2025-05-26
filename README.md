@@ -17,6 +17,7 @@ Evaluate whether NdLinear improves generalization or representation when used in
 ```bash
 pip install -r requirements.txt
 python train.py
+```
 
 ## 📊 Results (To Be Filled In)
 
