@@ -1,0 +1,5 @@
+torch
+torchvision
+matplotlib
+tqdm
+git+https://github.com/ensemble-core/NdLinear
