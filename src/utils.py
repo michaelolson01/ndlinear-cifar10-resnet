@@ -28,10 +28,13 @@ def plot_both(epochs, baseline, ndlinear, title, ylabel, save_path):
     plot_terminal_preview(epochs, baseline, ndlinear, title, ylabel)
 
 def plot_both_accuracy(epochs, baseline_acc, ndlinear_acc, save_path="output/accuracy_comparison.png"):
-    plot_both(epochs, baseline_acc, ndlinear_acc, title="Test Accuracy Comparison", ylabel="Accuracy (%)", save_path=save_path)
+    plot_both(epochs, baseline_acc, ndlinear_acc, title="Test Accuracy Comparison",
+              ylabel="Accuracy (%)", save_path=save_path)
 
 def plot_both_timing(epochs, baseline_time, ndlinear_time, save_path="output/timing_comparison.png"):
-    plot_both(epochs, baseline_time, ndlinear_time, title="Training Time per Epoch", ylabel="Seconds", save_path=save_path)
+    plot_both(epochs, baseline_time, ndlinear_time, title="Training Time per Epoch",
+              ylabel="Seconds", save_path=save_path)
 
 def plot_both_loss(epochs, baseline_loss, ndlinear_loss, save_path="output/loss_comparison.png"):
-    plot_both(epochs, baseline_loss, ndlinear_loss, title="Validation Loss per Epoch", ylabel="Loss", save_path=save_path)
+    plot_both(epochs, baseline_loss, ndlinear_loss, title="Validation Loss per Epoch",
+              ylabel="Loss", save_path=save_path)

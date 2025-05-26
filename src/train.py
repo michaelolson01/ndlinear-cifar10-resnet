@@ -1,3 +1,4 @@
+import time
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,7 +8,6 @@ from torchvision.models import resnet18
 from ndlinear import NdLinear
 from tqdm import tqdm
 from utils import plot_both_accuracy, plot_both_loss, plot_both_timing
-import time
 
 # Device configuration
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -38,6 +38,7 @@ test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size,
                                           shuffle=False, num_workers=2)
 
 # Model definition
+# Use a default resnet18 for the base, and replace the layers with NdLinear for nd
 def get_model(nd=False):
     model = resnet18(num_classes=10)
     if nd:
